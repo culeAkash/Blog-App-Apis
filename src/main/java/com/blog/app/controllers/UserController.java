@@ -2,6 +2,8 @@ package com.blog.app.controllers;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +31,10 @@ public class UserController {
 
 	// POST => Create user
 	@PostMapping("/")
-	public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto) {
+	public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto userDto) {
+		// When validation is not satisfied then MethodArgNotValid Exception is thrown
+		// which has be handled in GlobalExceptionHandler class
+		System.out.println(userDto.getId());
 		UserDto createdUserDto = this.userService.createUser(userDto);
 
 		return new ResponseEntity<UserDto>(createdUserDto, HttpStatus.CREATED);
@@ -37,7 +42,7 @@ public class UserController {
 
 	// PUT => Update User
 	@PutMapping("/{userId}")
-	public ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto, @PathVariable("userId") int id) {
+	public ResponseEntity<UserDto> updateUser(@Valid @RequestBody UserDto userDto, @PathVariable("userId") int id) {
 		UserDto updatedUserDto = this.userService.updateUser(userDto, id);
 
 		return new ResponseEntity<UserDto>(updatedUserDto, HttpStatus.OK);

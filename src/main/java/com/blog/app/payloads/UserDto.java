@@ -1,5 +1,11 @@
 package com.blog.app.payloads;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -9,9 +15,20 @@ import lombok.Setter;
 @Setter
 public class UserDto {
 	private int id;
+
+	@NotEmpty
+	@Size(min = 4, message = "Username must be minimum of 4 characters")
 	private String name;
+
+	@NotBlank(message = "Email must not be blank")
+	@Email(regexp = "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$", message = "Invalid Email!")
 	private String email;
+
+	@NotBlank(message = "Password must not be empty")
+	@Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&-+=()])(?=\\S+$).{8,}$", message = "Password must contain atleast 1 uppercase, 1 lowercase, 1 special character and 1 digit ")
 	private String password;
+
+	@NotEmpty
 	private String about;
 }
 /*
