@@ -14,7 +14,7 @@ import com.blog.app.repositories.UserRepository;
 import com.blog.app.services.UserService;
 
 @Service
-public class userServiceImpl implements UserService {
+public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private UserRepository userRepository;// we will save and update user here
