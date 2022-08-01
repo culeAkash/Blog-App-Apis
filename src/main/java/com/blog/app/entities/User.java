@@ -1,9 +1,14 @@
 package com.blog.app.entities;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,5 +32,10 @@ public class User {
 	private String email;
 	private String password;
 	private String about;
+
+	// A user can have many posts
+	// user is the column to store user id related to a post
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+	private Set<Post> posts = new HashSet<Post>();
 
 }
