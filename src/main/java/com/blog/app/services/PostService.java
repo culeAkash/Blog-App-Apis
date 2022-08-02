@@ -2,7 +2,6 @@ package com.blog.app.services;
 
 import java.util.List;
 
-import com.blog.app.entities.Post;
 import com.blog.app.payloads.PostDto;
 
 public interface PostService {
@@ -20,17 +19,17 @@ public interface PostService {
 	// get posts
 
 	// get all posts
-	List<Post> getAllPosts();
+	List<PostDto> getAllPosts();
 
 	// get post by id
-	Post getPostById(Integer postId);
+	PostDto getPostById(Integer postId);
 
 	// get all posts of a category
-	List<Post> getPostsByCategory(Integer categoryId);
+	List<PostDto> getPostsByCategory(Integer categoryId);
 
 	// get all posts by useer
-	List<Post> getAllPostsByUser(Integer userId);
+	List<PostDto> getAllPostsByUser(Integer userId);
 
 	// search post by keyword
-	List<Post> getPostsByKeyword(String keyword);
+	List<PostDto> getPostsByKeyword(String keyword);
 }

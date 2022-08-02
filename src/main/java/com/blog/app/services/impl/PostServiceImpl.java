@@ -1,5 +1,6 @@
 package com.blog.app.services.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -56,42 +57,79 @@ public class PostServiceImpl implements PostService {
 
 	@Override
 	public PostDto updatePost(PostDto postDto, Integer postId) {
-		// TODO Auto-generated method stub
-		return null;
+		// get post by id from the repo
+		Post post = this.postRepository.findById(postId)
+				.orElseThrow(() -> new ResourceNotFoundException("Post", "Post Id", postId));
+
+		// update old post details
+		post.setPostTitle(postDto.getPostTitle());
+		post.setPostContent(postDto.getPostContent());
+
+		// save new updated post
+		this.postRepository.save(post);
+		return this.postToPostDto(post);
 	}
 
 	@Override
 	public void deletePost(Integer postId) {
-		// TODO Auto-generated method stub
-
+		Post post = this.postRepository.findById(postId)
+				.orElseThrow(() -> new ResourceNotFoundException("Post", "Post Id", postId));
+		this.postRepository.delete(post);
 	}
 
 	@Override
-	public List<Post> getAllPosts() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<PostDto> getAllPosts() {
+		List<Post> posts = this.postRepository.findAll();
+
+		List<PostDto> postDtoObjects = new ArrayList<PostDto>();
+		for (Post post : posts) {
+			postDtoObjects.add(this.postToPostDto(post));
+		}
+		return postDtoObjects;
 	}
 
 	@Override
-	public Post getPostById(Integer postId) {
-		// TODO Auto-generated method stub
-		return null;
+	public PostDto getPostById(Integer postId) {
+		Post post = this.postRepository.findById(postId)
+				.orElseThrow(() -> new ResourceNotFoundException("Post", "Post Id", postId));
+
+		PostDto postDto = this.postToPostDto(post);
+		return postDto;
 	}
 
 	@Override
-	public List<Post> getPostsByCategory(Integer categoryId) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<PostDto> getPostsByCategory(Integer categoryId) {
+		Category category = this.categoryRepository.findById(categoryId)
+				.orElseThrow(() -> new ResourceNotFoundException("Category", "Category Id", categoryId));
+
+		// get all posts of a category
+		List<Post> posts = this.postRepository.findByCategory(category);
+
+		List<PostDto> postDtoObjects = new ArrayList<PostDto>();
+		for (Post post : posts) {
+			postDtoObjects.add(this.postToPostDto(post));
+		}
+
+		return postDtoObjects;
 	}
 
 	@Override
-	public List<Post> getAllPostsByUser(Integer userId) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<PostDto> getAllPostsByUser(Integer userId) {
+		User user = this.userRepository.findById(userId)
+				.orElseThrow(() -> new ResourceNotFoundException("User", "User Id", userId));
+
+		List<Post> posts = this.postRepository.findByUser(user);
+
+		List<PostDto> postDtoObjects = new ArrayList<PostDto>();
+		for (Post post : posts) {
+			postDtoObjects.add(this.postToPostDto(post));
+		}
+
+		return postDtoObjects;
 	}
 
 	@Override
-	public List<Post> getPostsByKeyword(String keyword) {
+	public List<PostDto> getPostsByKeyword(String keyword) {
 		// TODO Auto-generated method stub
 		return null;
 	}
