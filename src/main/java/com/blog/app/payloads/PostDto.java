@@ -2,6 +2,9 @@ package com.blog.app.payloads;
 
 import java.util.Date;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,7 +17,13 @@ import lombok.Setter;
 public class PostDto {
 
 	private Integer postId;
+
+	@NotEmpty
+	@Size(min = 5, max = 50, message = "Post Title must be of size between 5 and 50")
 	private String postTitle;
+
+	@NotEmpty
+	@Size(min = 5, max = 50, message = "Post Title must be of size between 5 and 50")
 	private String postContent;
 	private String image;
 	private Date addedDate;

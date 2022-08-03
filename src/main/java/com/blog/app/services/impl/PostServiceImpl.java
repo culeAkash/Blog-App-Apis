@@ -6,6 +6,9 @@ import java.util.List;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.blog.app.entities.Category;
@@ -78,8 +81,16 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public List<PostDto> getAllPosts() {
-		List<Post> posts = this.postRepository.findAll();
+	public List<PostDto> getAllPosts(Integer pageNumber, Integer pageSize) {
+		// Implementing Pagination now
+
+		// Make Pageable object
+		Pageable p = PageRequest.of(pageNumber, pageSize);
+
+		// get all posts by page
+
+		Page<Post> pagePost = this.postRepository.findAll(p);
+		List<Post> posts = pagePost.getContent();
 
 		List<PostDto> postDtoObjects = new ArrayList<PostDto>();
 		for (Post post : posts) {
@@ -98,12 +109,14 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public List<PostDto> getPostsByCategory(Integer categoryId) {
+	public List<PostDto> getPostsByCategory(Integer categoryId, Integer pageNumber, Integer pageSize) {
 		Category category = this.categoryRepository.findById(categoryId)
 				.orElseThrow(() -> new ResourceNotFoundException("Category", "Category Id", categoryId));
 
-		// get all posts of a category
-		List<Post> posts = this.postRepository.findByCategory(category);
+		// implementing pagination
+		Pageable p = PageRequest.of(pageNumber, pageSize);
+		// get all posts of a category and page attributes
+		List<Post> posts = this.postRepository.findByCategory(category, p);
 
 		List<PostDto> postDtoObjects = new ArrayList<PostDto>();
 		for (Post post : posts) {
@@ -114,11 +127,14 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public List<PostDto> getAllPostsByUser(Integer userId) {
+	public List<PostDto> getAllPostsByUser(Integer userId, Integer pageNumber, Integer pageSize) {
 		User user = this.userRepository.findById(userId)
 				.orElseThrow(() -> new ResourceNotFoundException("User", "User Id", userId));
 
-		List<Post> posts = this.postRepository.findByUser(user);
+		// implementing pagination
+		Pageable p = PageRequest.of(pageNumber, pageSize);
+
+		List<Post> posts = this.postRepository.findByUser(user, p);
 
 		List<PostDto> postDtoObjects = new ArrayList<PostDto>();
 		for (Post post : posts) {

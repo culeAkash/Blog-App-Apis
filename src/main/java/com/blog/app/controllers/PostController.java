@@ -2,6 +2,8 @@ package com.blog.app.controllers;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.blog.app.payloads.ApiResponse;
@@ -27,7 +30,7 @@ public class PostController {
 
 	// create user
 	@PostMapping("/user/{userId}/category/{categoryId}/posts")
-	public ResponseEntity<PostDto> createPost(@RequestBody PostDto postDtoObject, @PathVariable Integer userId,
+	public ResponseEntity<PostDto> createPost(@Valid @RequestBody PostDto postDtoObject, @PathVariable Integer userId,
 			@PathVariable Integer categoryId) {
 		PostDto createdPost = this.postService.createPost(postDtoObject, userId, categoryId);
 		return new ResponseEntity<PostDto>(createdPost, HttpStatus.CREATED);
@@ -37,22 +40,36 @@ public class PostController {
 
 	// controller for get posts for category
 	@GetMapping("/category/{categoryId}/posts")
-	public ResponseEntity<List<PostDto>> getAllPostsByCategory(@PathVariable Integer categoryId) {
-		List<PostDto> postsByCategory = this.postService.getPostsByCategory(categoryId);
+	// To implement pagination we have to get page size and page number from url
+	public ResponseEntity<List<PostDto>> getAllPostsByCategory(@PathVariable Integer categoryId,
+			@RequestParam(value = "pageNumber", defaultValue = "1", required = false) Integer pageNumber,
+			@RequestParam(value = "pageSize", defaultValue = "10", required = false) Integer pageSize) {
+
+		List<PostDto> postsByCategory = this.postService.getPostsByCategory(categoryId, pageNumber - 1, pageSize);
 		return new ResponseEntity<>(postsByCategory, HttpStatus.OK);
 	}
 
 	// controller for get posts for user
 	@GetMapping("/user/{userId}/posts")
-	public ResponseEntity<List<PostDto>> getAllPostsByUser(@PathVariable Integer userId) {
-		List<PostDto> postsByUser = this.postService.getAllPostsByUser(userId);
+	public ResponseEntity<List<PostDto>> getAllPostsByUser(@PathVariable Integer userId,
+			@RequestParam(value = "pageNumber", defaultValue = "1", required = false) Integer pageNumber,
+			@RequestParam(value = "pageSize", defaultValue = "10", required = false) Integer pageSize) {
+
+		List<PostDto> postsByUser = this.postService.getAllPostsByUser(userId, pageNumber - 1, pageSize);
 		return new ResponseEntity<>(postsByUser, HttpStatus.OK);
 	}
 
 	// controller to get all posts
+	// URL => localhost:8080/api/posts?pageNUmber=2&pageSize=4
 	@GetMapping("/posts")
-	public ResponseEntity<List<PostDto>> getAllPosts() {
-		List<PostDto> allPosts = this.postService.getAllPosts();
+	public ResponseEntity<List<PostDto>> getAllPosts(
+			@RequestParam(value = "pageNumber", defaultValue = "1", required = false) Integer pageNumber,
+			@RequestParam(value = "pageSize", defaultValue = "10", required = false) Integer pageSize) {
+		// for pagination we will get pageNumber and pageSize from url
+		// page number always start from zero so whatever comes from url, we pass to
+		// function after decrementing by 1
+
+		List<PostDto> allPosts = this.postService.getAllPosts(pageNumber - 1, pageSize);
 		return new ResponseEntity<List<PostDto>>(allPosts, HttpStatus.OK);
 	}
 
@@ -65,7 +82,7 @@ public class PostController {
 
 	// controller to update post
 	@PutMapping("/posts/{postId}")
-	public ResponseEntity<PostDto> updatePost(@RequestBody PostDto postDto, @PathVariable Integer postId) {
+	public ResponseEntity<PostDto> updatePost(@Valid @RequestBody PostDto postDto, @PathVariable Integer postId) {
 		PostDto updatedPost = this.postService.updatePost(postDto, postId);
 		return new ResponseEntity<PostDto>(updatedPost, HttpStatus.OK);
 	}

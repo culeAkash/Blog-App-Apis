@@ -11,7 +11,7 @@ public interface UserService {
 
 	UserDto getUserById(Integer userId);
 
-	List<UserDto> getAllusers();
+	List<UserDto> getAllusers(Integer pageNumber, Integer pageSize);
 
 	void deleteUser(Integer userId);
 }

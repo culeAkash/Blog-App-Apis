@@ -5,6 +5,9 @@ import java.util.List;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.blog.app.entities.User;
@@ -66,8 +69,12 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<UserDto> getAllusers() {
-		List<User> users = this.userRepository.findAll();
+	public List<UserDto> getAllusers(Integer pageNumber, Integer pageSize) {
+		// implementing pagination
+		Pageable p = PageRequest.of(pageNumber, pageSize);
+
+		Page<User> pageUser = this.userRepository.findAll(p);
+		List<User> users = pageUser.getContent();
 
 		List<UserDto> userDtos = new ArrayList<UserDto>();
 

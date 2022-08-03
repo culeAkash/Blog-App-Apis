@@ -16,7 +16,7 @@ public interface CategoryService {
 	CategoryDto updateCategory(CategoryDto dto, Integer id);
 
 	// get
-	List<CategoryDto> getAllCategories();
+	List<CategoryDto> getAllCategories(Integer pageNumber, Integer pageSize);
 
 	CategoryDto getCategoryById(Integer id);
 }
