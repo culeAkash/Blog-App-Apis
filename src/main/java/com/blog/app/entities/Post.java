@@ -37,7 +37,6 @@ public class Post {
 
 	// Which user posted this
 	@ManyToOne
-	@JoinColumn(name = "user_id")
 	private User user;
 
 }

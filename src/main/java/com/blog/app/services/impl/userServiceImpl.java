@@ -8,12 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.blog.app.entities.User;
 import com.blog.app.exceptions.ResourceNotFoundException;
-import com.blog.app.payloads.PaginatedResponse;
 import com.blog.app.payloads.UserDto;
 import com.blog.app.repositories.UserRepository;
 import com.blog.app.services.UserService;
@@ -71,23 +69,11 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public PaginatedResponse<UserDto> getAllusers(Integer pageNumber, Integer pageSize, String sortBy, String sortDir) {
-		// implemnting sorting here
-		Sort sort = sortDir.equalsIgnoreCase("asc") ? Sort.by(sortBy) : Sort.by(sortBy).descending();
-
+	public List<UserDto> getAllusers(Integer pageNumber, Integer pageSize) {
 		// implementing pagination
-		Pageable p = PageRequest.of(pageNumber, pageSize, sort);
+		Pageable p = PageRequest.of(pageNumber, pageSize);
 
 		Page<User> pageUser = this.userRepository.findAll(p);
-
-		// Now we will send modified response when pagination is implemented
-		PaginatedResponse<UserDto> paginatedResponse = new PaginatedResponse<UserDto>();
-		paginatedResponse.setPageNumber(pageUser.getNumber() + 1);
-		paginatedResponse.setPageSize(pageUser.getSize());
-		paginatedResponse.setTotalElements(pageUser.getTotalElements());
-		paginatedResponse.setTotalPages(pageUser.getTotalPages());
-		paginatedResponse.setIsLastPage(pageUser.isLast());
-
 		List<User> users = pageUser.getContent();
 
 		List<UserDto> userDtos = new ArrayList<UserDto>();
@@ -96,9 +82,7 @@ public class UserServiceImpl implements UserService {
 			userDtos.add(this.userToDto(user));
 		}
 
-		paginatedResponse.setContent(userDtos);
-
-		return paginatedResponse;
+		return userDtos;
 	}
 
 	@Override

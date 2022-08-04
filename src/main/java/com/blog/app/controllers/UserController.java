@@ -1,5 +1,7 @@
 package com.blog.app.controllers;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,13 +18,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.blog.app.payloads.ApiResponse;
-import com.blog.app.payloads.PaginatedResponse;
 import com.blog.app.payloads.UserDto;
 import com.blog.app.services.UserService;
 
 //Make rest api use RestController
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/users")
 public class UserController {
 
 	// for implementing crud operations
@@ -30,18 +31,18 @@ public class UserController {
 	private UserService userService;
 
 	// POST => Create user
-	@PostMapping("/users")
+	@PostMapping("/")
 	public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto userDto) {
 		// When validation is not satisfied then MethodArgNotValid Exception is thrown
 		// which has be handled in GlobalExceptionHandler class
-		System.out.println(userDto.getUserId());
+		System.out.println(userDto.getId());
 		UserDto createdUserDto = this.userService.createUser(userDto);
 
 		return new ResponseEntity<UserDto>(createdUserDto, HttpStatus.CREATED);
 	}
 
 	// PUT => Update User
-	@PutMapping("/users/{userId}")
+	@PutMapping("/{userId}")
 	public ResponseEntity<UserDto> updateUser(@Valid @RequestBody UserDto userDto, @PathVariable("userId") int id) {
 		UserDto updatedUserDto = this.userService.updateUser(userDto, id);
 
@@ -50,19 +51,17 @@ public class UserController {
 
 	// GET => get User
 
-	@GetMapping("/users")
-	public ResponseEntity<PaginatedResponse<UserDto>> getAllUsers(
+	@GetMapping("/")
+	public ResponseEntity<List<UserDto>> getAllUsers(
 			@RequestParam(value = "pageNumber", defaultValue = "1", required = false) Integer pageNumber,
-			@RequestParam(value = "pageSize", defaultValue = "10", required = false) Integer pageSize,
-			@RequestParam(value = "sortBy", defaultValue = "id", required = false) String sortBy,
-			@RequestParam(value = "sortDir", defaultValue = "asc", required = false) String sortDir) {
-		PaginatedResponse<UserDto> allusers = this.userService.getAllusers(pageNumber - 1, pageSize, sortBy, sortDir);
+			@RequestParam(value = "pageSize", defaultValue = "10", required = false) Integer pageSize) {
+		List<UserDto> allusers = this.userService.getAllusers(pageNumber - 1, pageSize);
 
 		return ResponseEntity.ok(allusers);
 	}
 
 	// get single user by id
-	@GetMapping("/users/{userId}")
+	@GetMapping("/{userId}")
 	public ResponseEntity<UserDto> getAllUsers(@PathVariable int userId) {
 		UserDto user = this.userService.getUserById(userId);
 
@@ -71,7 +70,7 @@ public class UserController {
 
 	// DELETE => delete user
 
-	@DeleteMapping("/users/{userId}")
+	@DeleteMapping("/{userId}")
 	public ResponseEntity<ApiResponse> deleteUser(@PathVariable int userId) {
 		this.userService.deleteUser(userId);
 

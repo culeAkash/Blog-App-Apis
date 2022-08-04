@@ -1,7 +1,8 @@
 package com.blog.app.services;
 
+import java.util.List;
+
 import com.blog.app.payloads.CategoryDto;
-import com.blog.app.payloads.PaginatedResponse;
 
 public interface CategoryService {
 
@@ -15,8 +16,7 @@ public interface CategoryService {
 	CategoryDto updateCategory(CategoryDto dto, Integer id);
 
 	// get
-	PaginatedResponse<CategoryDto> getAllCategories(Integer pageNumber, Integer pageSize, String sortBy,
-			String sortDir);
+	List<CategoryDto> getAllCategories(Integer pageNumber, Integer pageSize);
 
 	CategoryDto getCategoryById(Integer id);
 }

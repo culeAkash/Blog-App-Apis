@@ -1,6 +1,7 @@
 package com.blog.app.services;
 
-import com.blog.app.payloads.PaginatedResponse;
+import java.util.List;
+
 import com.blog.app.payloads.UserDto;
 
 public interface UserService {
@@ -10,7 +11,7 @@ public interface UserService {
 
 	UserDto getUserById(Integer userId);
 
-	PaginatedResponse<UserDto> getAllusers(Integer pageNumber, Integer pageSize, String sortBy, String sortDir);
+	List<UserDto> getAllusers(Integer pageNumber, Integer pageSize);
 
 	void deleteUser(Integer userId);
 }

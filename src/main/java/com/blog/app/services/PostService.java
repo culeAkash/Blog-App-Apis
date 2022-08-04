@@ -2,7 +2,6 @@ package com.blog.app.services;
 
 import java.util.List;
 
-import com.blog.app.payloads.PaginatedResponse;
 import com.blog.app.payloads.PostDto;
 
 public interface PostService {
@@ -20,18 +19,16 @@ public interface PostService {
 	// get posts
 
 	// get all posts
-	PaginatedResponse<PostDto> getAllPosts(Integer pageNumber, Integer pageSize, String sortBy, String sortDir);
+	List<PostDto> getAllPosts(Integer pageNumber, Integer pageSize);
 
 	// get post by id
 	PostDto getPostById(Integer postId);
 
 	// get all posts of a category
-	PaginatedResponse<PostDto> getPostsByCategory(Integer categoryId, Integer pageNumber, Integer pageSize,
-			String sortBy, String sortDir);
+	List<PostDto> getPostsByCategory(Integer categoryId, Integer pageNumber, Integer pageSize);
 
 	// get all posts by useer
-	PaginatedResponse<PostDto> getAllPostsByUser(Integer userId, Integer pageNumber, Integer pageSize, String sortBy,
-			String sortDir);
+	List<PostDto> getAllPostsByUser(Integer userId, Integer pageNumber, Integer pageSize);
 
 	// search post by keyword
 	List<PostDto> getPostsByKeyword(String keyword);
