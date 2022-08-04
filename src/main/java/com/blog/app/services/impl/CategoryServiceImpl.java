@@ -8,11 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.blog.app.entities.Category;
 import com.blog.app.exceptions.ResourceNotFoundException;
 import com.blog.app.payloads.CategoryDto;
+import com.blog.app.payloads.PaginatedResponse;
 import com.blog.app.repositories.CategoryRepository;
 import com.blog.app.services.CategoryService;
 
@@ -59,11 +61,25 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	@Override
-	public List<CategoryDto> getAllCategories(Integer pageNumber, Integer pagesize) {
+	public PaginatedResponse<CategoryDto> getAllCategories(Integer pageNumber, Integer pageSize, String sortBy,
+			String sortDir) {
+
+		// implemnting sorting here
+		Sort sort = sortDir.equalsIgnoreCase("asc") ? Sort.by(sortBy) : Sort.by(sortBy).descending();
+
 		// implementing pagination
-		Pageable p = PageRequest.of(pageNumber, pagesize);
+		Pageable p = PageRequest.of(pageNumber, pageSize, sort);
 
 		Page<Category> pageCat = this.catRepo.findAll(p);
+
+		// Now we will send modified response wherever pagination is implemented
+		PaginatedResponse<CategoryDto> paginatedResponse = new PaginatedResponse<CategoryDto>();
+		paginatedResponse.setPageNumber(pageCat.getNumber() + 1);
+		paginatedResponse.setPageSize(pageCat.getSize());
+		paginatedResponse.setTotalElements(pageCat.getTotalElements());
+		paginatedResponse.setTotalPages(pageCat.getTotalPages());
+		paginatedResponse.setIsLastPage(pageCat.isLast());
+
 		List<Category> categories = pageCat.getContent();
 
 		List<CategoryDto> dtos = new ArrayList<CategoryDto>();
@@ -71,7 +87,8 @@ public class CategoryServiceImpl implements CategoryService {
 			dtos.add(this.CategoryToDto(cat));
 		});
 
-		return dtos;
+		paginatedResponse.setContent(dtos);
+		return paginatedResponse;
 	}
 
 	@Override

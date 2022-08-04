@@ -9,12 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.blog.app.entities.Category;
 import com.blog.app.entities.Post;
 import com.blog.app.entities.User;
 import com.blog.app.exceptions.ResourceNotFoundException;
+import com.blog.app.payloads.PaginatedResponse;
 import com.blog.app.payloads.PostDto;
 import com.blog.app.repositories.CategoryRepository;
 import com.blog.app.repositories.PostRepository;
@@ -81,22 +83,38 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public List<PostDto> getAllPosts(Integer pageNumber, Integer pageSize) {
+	public PaginatedResponse<PostDto> getAllPosts(Integer pageNumber, Integer pageSize, String sortBy, String sortDir) {
 		// Implementing Pagination now
 
+		// if asc then in ascending order else in desc
+		Sort sort = sortDir.equalsIgnoreCase("asc") ? Sort.by(sortBy) : Sort.by(sortBy).descending();
+
 		// Make Pageable object
-		Pageable p = PageRequest.of(pageNumber, pageSize);
+		Pageable p = PageRequest.of(pageNumber, pageSize, sort);// Sort.by returns a Sort object
+
+		// Implementing sorting here
 
 		// get all posts by page
 
 		Page<Post> pagePost = this.postRepository.findAll(p);
+
+		// send proper response when pagination is implemented
+		PaginatedResponse<PostDto> response = new PaginatedResponse<PostDto>();
+		response.setPageNumber(pagePost.getNumber() + 1);
+		response.setIsLastPage(pagePost.isLast());
+		response.setPageSize(pagePost.getSize());
+		response.setTotalElements(pagePost.getTotalElements());
+		response.setTotalPages(pagePost.getTotalPages());
+
 		List<Post> posts = pagePost.getContent();
 
 		List<PostDto> postDtoObjects = new ArrayList<PostDto>();
 		for (Post post : posts) {
 			postDtoObjects.add(this.postToPostDto(post));
 		}
-		return postDtoObjects;
+
+		response.setContent(postDtoObjects);
+		return response;
 	}
 
 	@Override
@@ -109,39 +127,72 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public List<PostDto> getPostsByCategory(Integer categoryId, Integer pageNumber, Integer pageSize) {
+	public PaginatedResponse<PostDto> getPostsByCategory(Integer categoryId, Integer pageNumber, Integer pageSize,
+			String sortBy, String sortDir) {
 		Category category = this.categoryRepository.findById(categoryId)
 				.orElseThrow(() -> new ResourceNotFoundException("Category", "Category Id", categoryId));
 
-		// implementing pagination
-		Pageable p = PageRequest.of(pageNumber, pageSize);
+		// if asc then in ascending order else in desc
+		Sort sort = sortDir.equalsIgnoreCase("asc") ? Sort.by(sortBy) : Sort.by(sortBy).descending();
+
+		// Make Pageable object
+		Pageable p = PageRequest.of(pageNumber, pageSize, sort);// Sort.by returns a Sort object
+
 		// get all posts of a category and page attributes
-		List<Post> posts = this.postRepository.findByCategory(category, p);
+		Page<Post> pagePost = this.postRepository.findByCategory(category, p);
+
+		// send proper response when pagination is implemented
+		PaginatedResponse<PostDto> response = new PaginatedResponse<PostDto>();
+		response.setPageNumber(pagePost.getNumber() + 1);
+		response.setIsLastPage(pagePost.isLast());
+		response.setPageSize(pagePost.getSize());
+		response.setTotalElements(pagePost.getTotalElements());
+		response.setTotalPages(pagePost.getTotalPages());
+
+		List<Post> posts = pagePost.getContent();
 
 		List<PostDto> postDtoObjects = new ArrayList<PostDto>();
 		for (Post post : posts) {
 			postDtoObjects.add(this.postToPostDto(post));
 		}
 
-		return postDtoObjects;
+		response.setContent(postDtoObjects);
+
+		return response;
 	}
 
 	@Override
-	public List<PostDto> getAllPostsByUser(Integer userId, Integer pageNumber, Integer pageSize) {
+	public PaginatedResponse<PostDto> getAllPostsByUser(Integer userId, Integer pageNumber, Integer pageSize,
+			String sortBy, String sortDir) {
 		User user = this.userRepository.findById(userId)
 				.orElseThrow(() -> new ResourceNotFoundException("User", "User Id", userId));
 
-		// implementing pagination
-		Pageable p = PageRequest.of(pageNumber, pageSize);
+		// if asc then in ascending order else in desc
+		Sort sort = sortDir.equalsIgnoreCase("asc") ? Sort.by(sortBy) : Sort.by(sortBy).descending();
 
-		List<Post> posts = this.postRepository.findByUser(user, p);
+		// Make Pageable object
+		Pageable p = PageRequest.of(pageNumber, pageSize, sort);// Sort.by returns a Sort object
+
+		Page<Post> pagePost = this.postRepository.findByUser(user, p);
+
+		// send proper response when pagination is implemented
+		PaginatedResponse<PostDto> response = new PaginatedResponse<PostDto>();
+		response.setPageNumber(pagePost.getNumber() + 1);
+		response.setIsLastPage(pagePost.isLast());
+		response.setPageSize(pagePost.getSize());
+		response.setTotalElements(pagePost.getTotalElements());
+		response.setTotalPages(pagePost.getTotalPages());
+
+		List<Post> posts = pagePost.getContent();
 
 		List<PostDto> postDtoObjects = new ArrayList<PostDto>();
 		for (Post post : posts) {
 			postDtoObjects.add(this.postToPostDto(post));
 		}
 
-		return postDtoObjects;
+		response.setContent(postDtoObjects);
+
+		return response;
 	}
 
 	@Override
