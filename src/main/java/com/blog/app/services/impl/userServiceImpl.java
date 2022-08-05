@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.blog.app.entities.User;
@@ -74,9 +75,13 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public PaginatedResponse<UserDto> getAllusers(Integer pageNumber, Integer pageSize) {
+	public PaginatedResponse<UserDto> getAllusers(Integer pageNumber, Integer pageSize, String sortBy, String sortDir) {
+
+		// Implementing sorting
+		Sort sort = this.utils.getSortObject(sortBy, sortDir);
+
 		// implementing pagination
-		Pageable p = PageRequest.of(pageNumber, pageSize);
+		Pageable p = PageRequest.of(pageNumber, pageSize, sort);
 
 		Page<User> pageUser = this.userRepository.findAll(p);
 

@@ -10,7 +10,7 @@ public interface UserService {
 
 	UserDto getUserById(Integer userId);
 
-	PaginatedResponse<UserDto> getAllusers(Integer pageNumber, Integer pageSize);
+	PaginatedResponse<UserDto> getAllusers(Integer pageNumber, Integer pageSize, String sortBy, String sortDir);
 
 	void deleteUser(Integer userId);
 }

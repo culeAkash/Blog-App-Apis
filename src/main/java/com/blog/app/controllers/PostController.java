@@ -42,10 +42,12 @@ public class PostController {
 	// To implement pagination we have to get page size and page number from url
 	public ResponseEntity<PaginatedResponse<PostDto>> getAllPostsByCategory(@PathVariable Integer categoryId,
 			@RequestParam(value = "pageNumber", defaultValue = "1", required = false) Integer pageNumber,
-			@RequestParam(value = "pageSize", defaultValue = "10", required = false) Integer pageSize) {
+			@RequestParam(value = "pageSize", defaultValue = "10", required = false) Integer pageSize,
+			@RequestParam(value = "sortBy", defaultValue = "postId", required = false) String sortBy,
+			@RequestParam(value = "sortDir", defaultValue = "asc", required = false) String sortDir) {
 
 		PaginatedResponse<PostDto> postsByCategory = this.postService.getPostsByCategory(categoryId, pageNumber - 1,
-				pageSize);
+				pageSize, sortBy, sortDir);
 		return new ResponseEntity<>(postsByCategory, HttpStatus.OK);
 	}
 
@@ -53,9 +55,12 @@ public class PostController {
 	@GetMapping("/user/{userId}/posts")
 	public ResponseEntity<PaginatedResponse<PostDto>> getAllPostsByUser(@PathVariable Integer userId,
 			@RequestParam(value = "pageNumber", defaultValue = "1", required = false) Integer pageNumber,
-			@RequestParam(value = "pageSize", defaultValue = "10", required = false) Integer pageSize) {
+			@RequestParam(value = "pageSize", defaultValue = "10", required = false) Integer pageSize,
+			@RequestParam(value = "sortBy", defaultValue = "postId", required = false) String sortBy,
+			@RequestParam(value = "sortDir", defaultValue = "asc", required = false) String sortDir) {
 
-		PaginatedResponse<PostDto> postsByUser = this.postService.getAllPostsByUser(userId, pageNumber - 1, pageSize);
+		PaginatedResponse<PostDto> postsByUser = this.postService.getAllPostsByUser(userId, pageNumber - 1, pageSize,
+				sortBy, sortDir);
 		return new ResponseEntity<>(postsByUser, HttpStatus.OK);
 	}
 
@@ -64,12 +69,14 @@ public class PostController {
 	@GetMapping("/posts")
 	public ResponseEntity<PaginatedResponse<PostDto>> getAllPosts(
 			@RequestParam(value = "pageNumber", defaultValue = "1", required = false) Integer pageNumber,
-			@RequestParam(value = "pageSize", defaultValue = "10", required = false) Integer pageSize) {
+			@RequestParam(value = "pageSize", defaultValue = "10", required = false) Integer pageSize,
+			@RequestParam(value = "sortBy", defaultValue = "postId", required = false) String sortBy,
+			@RequestParam(value = "sortDir", defaultValue = "asc", required = false) String sortDir) {
 		// for pagination we will get pageNumber and pageSize from url
 		// page number always start from zero so whatever comes from url, we pass to
 		// function after decrementing by 1
 
-		PaginatedResponse<PostDto> allPosts = this.postService.getAllPosts(pageNumber - 1, pageSize);
+		PaginatedResponse<PostDto> allPosts = this.postService.getAllPosts(pageNumber - 1, pageSize, sortBy, sortDir);
 		return new ResponseEntity<PaginatedResponse<PostDto>>(allPosts, HttpStatus.OK);
 	}
 
