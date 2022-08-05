@@ -1,7 +1,5 @@
 package com.blog.app.controllers;
 
-import java.util.List;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,24 +17,25 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.blog.app.payloads.ApiResponse;
 import com.blog.app.payloads.CategoryDto;
+import com.blog.app.payloads.PaginatedResponse;
 import com.blog.app.services.CategoryService;
 
 @RestController
-@RequestMapping("/api/categories")
+@RequestMapping("/api")
 public class CategoryController {
 
 	@Autowired
 	CategoryService categoryService;
 
 	// create
-	@PostMapping("/")
+	@PostMapping("/categories")
 	public ResponseEntity<CategoryDto> createCategory(@Valid @RequestBody CategoryDto categoryDto) {
 		CategoryDto createdCategory = this.categoryService.createCategory(categoryDto);
 		return new ResponseEntity<CategoryDto>(createdCategory, HttpStatus.CREATED);
 	}
 
 	// update
-	@PutMapping("/{categoryId}")
+	@PutMapping("/categories/{categoryId}")
 	public ResponseEntity<CategoryDto> updateCategory(@Valid @RequestBody CategoryDto categoryDto,
 			@PathVariable Integer categoryId) {
 		CategoryDto updatedCategory = this.categoryService.updateCategory(categoryDto, categoryId);
@@ -44,26 +43,26 @@ public class CategoryController {
 	}
 
 	// delete
-	@DeleteMapping("/{categoryId}")
+	@DeleteMapping("/categories/{categoryId}")
 	public ResponseEntity<ApiResponse> deleteCategory(@PathVariable Integer categoryId) {
 		this.categoryService.deletecategory(categoryId);
 		return new ResponseEntity<ApiResponse>(new ApiResponse("Deleted Category Successfully", true), HttpStatus.OK);
 	}
 
 	// get
-	@GetMapping("/{categoryId}")
+	@GetMapping("/categories/{categoryId}")
 	public ResponseEntity<CategoryDto> getcategoryById(@PathVariable Integer categoryId) {
 		CategoryDto categoryDto = this.categoryService.getCategoryById(categoryId);
 		return new ResponseEntity<CategoryDto>(categoryDto, HttpStatus.OK);
 	}
 
 	// get all
-	@GetMapping("/")
-	public ResponseEntity<List<CategoryDto>> getAllcategories(
+	@GetMapping("/categories")
+	public ResponseEntity<PaginatedResponse<CategoryDto>> getAllcategories(
 			@RequestParam(value = "pageNumber", defaultValue = "1", required = false) Integer pageNumber,
 			@RequestParam(value = "pageSize", defaultValue = "10", required = false) Integer pageSize) {
-		List<CategoryDto> allCategories = this.categoryService.getAllCategories(pageNumber - 1, pageSize);
-		return new ResponseEntity<List<CategoryDto>>(allCategories, HttpStatus.OK);
+		PaginatedResponse<CategoryDto> allCategories = this.categoryService.getAllCategories(pageNumber - 1, pageSize);
+		return new ResponseEntity<PaginatedResponse<CategoryDto>>(allCategories, HttpStatus.OK);
 	}
 
 }

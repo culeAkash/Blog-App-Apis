@@ -13,8 +13,10 @@ import org.springframework.stereotype.Service;
 import com.blog.app.entities.Category;
 import com.blog.app.exceptions.ResourceNotFoundException;
 import com.blog.app.payloads.CategoryDto;
+import com.blog.app.payloads.PaginatedResponse;
 import com.blog.app.repositories.CategoryRepository;
 import com.blog.app.services.CategoryService;
+import com.blog.app.utils.SortingAndPaginationUtils;
 
 //implemantation for performing all repository related functionalities
 
@@ -26,6 +28,9 @@ public class CategoryServiceImpl implements CategoryService {
 
 	@Autowired
 	private ModelMapper mapper;
+
+	@Autowired
+	private SortingAndPaginationUtils<Category, CategoryDto> utils;
 
 	@Override
 	public CategoryDto createCategory(CategoryDto dto) {
@@ -59,19 +64,25 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	@Override
-	public List<CategoryDto> getAllCategories(Integer pageNumber, Integer pagesize) {
+	public PaginatedResponse<CategoryDto> getAllCategories(Integer pageNumber, Integer pagesize) {
 		// implementing pagination
 		Pageable p = PageRequest.of(pageNumber, pagesize);
 
-		Page<Category> pageCat = this.catRepo.findAll(p);
-		List<Category> categories = pageCat.getContent();
+		Page<Category> pageCategory = this.catRepo.findAll(p);
+
+		// Send Improved response after pagination
+		PaginatedResponse<CategoryDto> pageToPaginatedResponse = this.utils.pageToPaginatedResponse(pageCategory);
+
+		List<Category> categories = pageCategory.getContent();
 
 		List<CategoryDto> dtos = new ArrayList<CategoryDto>();
 		categories.forEach((cat) -> {
 			dtos.add(this.CategoryToDto(cat));
 		});
 
-		return dtos;
+		pageToPaginatedResponse.setContent(dtos);
+
+		return pageToPaginatedResponse;
 	}
 
 	@Override

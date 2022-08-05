@@ -25,8 +25,8 @@ import lombok.Setter;
 public class User {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO) // auto incremenet will happen
-	private int id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY) // auto incremenet will happen
+	private int userId;
 
 	private String name;
 	private String email;

@@ -15,11 +15,13 @@ import com.blog.app.entities.Category;
 import com.blog.app.entities.Post;
 import com.blog.app.entities.User;
 import com.blog.app.exceptions.ResourceNotFoundException;
+import com.blog.app.payloads.PaginatedResponse;
 import com.blog.app.payloads.PostDto;
 import com.blog.app.repositories.CategoryRepository;
 import com.blog.app.repositories.PostRepository;
 import com.blog.app.repositories.UserRepository;
 import com.blog.app.services.PostService;
+import com.blog.app.utils.SortingAndPaginationUtils;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -35,6 +37,9 @@ public class PostServiceImpl implements PostService {
 
 	@Autowired
 	private CategoryRepository categoryRepository;
+
+	@Autowired
+	private SortingAndPaginationUtils<Post, PostDto> utils;
 
 	@Override
 	public PostDto createPost(PostDto postDto, Integer userId, Integer categoryId) {
@@ -81,7 +86,7 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public List<PostDto> getAllPosts(Integer pageNumber, Integer pageSize) {
+	public PaginatedResponse<PostDto> getAllPosts(Integer pageNumber, Integer pageSize) {
 		// Implementing Pagination now
 
 		// Make Pageable object
@@ -90,13 +95,19 @@ public class PostServiceImpl implements PostService {
 		// get all posts by page
 
 		Page<Post> pagePost = this.postRepository.findAll(p);
+
+		// Adding all response to Paginated Response Object
+		PaginatedResponse<PostDto> pageToPaginatedResponse = this.utils.pageToPaginatedResponse(pagePost);
+
 		List<Post> posts = pagePost.getContent();
 
 		List<PostDto> postDtoObjects = new ArrayList<PostDto>();
 		for (Post post : posts) {
 			postDtoObjects.add(this.postToPostDto(post));
 		}
-		return postDtoObjects;
+
+		pageToPaginatedResponse.setContent(postDtoObjects);
+		return pageToPaginatedResponse;
 	}
 
 	@Override
@@ -109,39 +120,52 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public List<PostDto> getPostsByCategory(Integer categoryId, Integer pageNumber, Integer pageSize) {
+	public PaginatedResponse<PostDto> getPostsByCategory(Integer categoryId, Integer pageNumber, Integer pageSize) {
 		Category category = this.categoryRepository.findById(categoryId)
 				.orElseThrow(() -> new ResourceNotFoundException("Category", "Category Id", categoryId));
 
 		// implementing pagination
 		Pageable p = PageRequest.of(pageNumber, pageSize);
 		// get all posts of a category and page attributes
-		List<Post> posts = this.postRepository.findByCategory(category, p);
+		Page<Post> pagePost = this.postRepository.findByCategory(category, p);
+
+		// Adding all response to Paginated Response Object
+		PaginatedResponse<PostDto> pageToPaginatedResposnse = this.utils.pageToPaginatedResponse(pagePost);
+
+		List<Post> posts = pagePost.getContent();
 
 		List<PostDto> postDtoObjects = new ArrayList<PostDto>();
 		for (Post post : posts) {
 			postDtoObjects.add(this.postToPostDto(post));
 		}
+		pageToPaginatedResposnse.setContent(postDtoObjects);
 
-		return postDtoObjects;
+		return pageToPaginatedResposnse;
 	}
 
 	@Override
-	public List<PostDto> getAllPostsByUser(Integer userId, Integer pageNumber, Integer pageSize) {
+	public PaginatedResponse<PostDto> getAllPostsByUser(Integer userId, Integer pageNumber, Integer pageSize) {
 		User user = this.userRepository.findById(userId)
 				.orElseThrow(() -> new ResourceNotFoundException("User", "User Id", userId));
 
 		// implementing pagination
 		Pageable p = PageRequest.of(pageNumber, pageSize);
 
-		List<Post> posts = this.postRepository.findByUser(user, p);
+		Page<Post> pagePost = this.postRepository.findByUser(user, p);
+
+		// Adding all response to Paginated Response Object
+		PaginatedResponse<PostDto> pageToPaginatedResposnse = this.utils.pageToPaginatedResponse(pagePost);
+
+		List<Post> posts = pagePost.getContent();
 
 		List<PostDto> postDtoObjects = new ArrayList<PostDto>();
 		for (Post post : posts) {
 			postDtoObjects.add(this.postToPostDto(post));
 		}
 
-		return postDtoObjects;
+		pageToPaginatedResposnse.setContent(postDtoObjects);
+
+		return pageToPaginatedResposnse;
 	}
 
 	@Override

@@ -12,9 +12,11 @@ import org.springframework.stereotype.Service;
 
 import com.blog.app.entities.User;
 import com.blog.app.exceptions.ResourceNotFoundException;
+import com.blog.app.payloads.PaginatedResponse;
 import com.blog.app.payloads.UserDto;
 import com.blog.app.repositories.UserRepository;
 import com.blog.app.services.UserService;
+import com.blog.app.utils.SortingAndPaginationUtils;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -25,12 +27,15 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private ModelMapper modelMapper;
 
+	@Autowired
+	private SortingAndPaginationUtils<User, UserDto> utils;
+
 	@Override
 	public UserDto createUser(UserDto userDtoObject) {
 		// here we have UserDto object but userRepo will expect User object so we have
 		// to change dto to user
 		User user = this.dtoToUser(userDtoObject);
-		System.out.println(user.getId());
+		System.out.println(user.getUserId());
 		User savedUser = this.userRepository.save(user);// saves/update user to the database
 		return this.userToDto(savedUser);
 	}
@@ -69,11 +74,15 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<UserDto> getAllusers(Integer pageNumber, Integer pageSize) {
+	public PaginatedResponse<UserDto> getAllusers(Integer pageNumber, Integer pageSize) {
 		// implementing pagination
 		Pageable p = PageRequest.of(pageNumber, pageSize);
 
 		Page<User> pageUser = this.userRepository.findAll(p);
+
+		// Improved Response will be now sent after pagination
+		PaginatedResponse<UserDto> pageToPaginatedResponse = this.utils.pageToPaginatedResponse(pageUser);
+
 		List<User> users = pageUser.getContent();
 
 		List<UserDto> userDtos = new ArrayList<UserDto>();
@@ -82,7 +91,9 @@ public class UserServiceImpl implements UserService {
 			userDtos.add(this.userToDto(user));
 		}
 
-		return userDtos;
+		pageToPaginatedResponse.setContent(userDtos);
+
+		return pageToPaginatedResponse;
 	}
 
 	@Override

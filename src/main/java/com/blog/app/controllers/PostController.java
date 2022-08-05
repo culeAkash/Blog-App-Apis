@@ -1,7 +1,5 @@
 package com.blog.app.controllers;
 
-import java.util.List;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.blog.app.payloads.ApiResponse;
+import com.blog.app.payloads.PaginatedResponse;
 import com.blog.app.payloads.PostDto;
 import com.blog.app.services.PostService;
 
@@ -41,36 +40,37 @@ public class PostController {
 	// controller for get posts for category
 	@GetMapping("/category/{categoryId}/posts")
 	// To implement pagination we have to get page size and page number from url
-	public ResponseEntity<List<PostDto>> getAllPostsByCategory(@PathVariable Integer categoryId,
+	public ResponseEntity<PaginatedResponse<PostDto>> getAllPostsByCategory(@PathVariable Integer categoryId,
 			@RequestParam(value = "pageNumber", defaultValue = "1", required = false) Integer pageNumber,
 			@RequestParam(value = "pageSize", defaultValue = "10", required = false) Integer pageSize) {
 
-		List<PostDto> postsByCategory = this.postService.getPostsByCategory(categoryId, pageNumber - 1, pageSize);
+		PaginatedResponse<PostDto> postsByCategory = this.postService.getPostsByCategory(categoryId, pageNumber - 1,
+				pageSize);
 		return new ResponseEntity<>(postsByCategory, HttpStatus.OK);
 	}
 
 	// controller for get posts for user
 	@GetMapping("/user/{userId}/posts")
-	public ResponseEntity<List<PostDto>> getAllPostsByUser(@PathVariable Integer userId,
+	public ResponseEntity<PaginatedResponse<PostDto>> getAllPostsByUser(@PathVariable Integer userId,
 			@RequestParam(value = "pageNumber", defaultValue = "1", required = false) Integer pageNumber,
 			@RequestParam(value = "pageSize", defaultValue = "10", required = false) Integer pageSize) {
 
-		List<PostDto> postsByUser = this.postService.getAllPostsByUser(userId, pageNumber - 1, pageSize);
+		PaginatedResponse<PostDto> postsByUser = this.postService.getAllPostsByUser(userId, pageNumber - 1, pageSize);
 		return new ResponseEntity<>(postsByUser, HttpStatus.OK);
 	}
 
 	// controller to get all posts
 	// URL => localhost:8080/api/posts?pageNUmber=2&pageSize=4
 	@GetMapping("/posts")
-	public ResponseEntity<List<PostDto>> getAllPosts(
+	public ResponseEntity<PaginatedResponse<PostDto>> getAllPosts(
 			@RequestParam(value = "pageNumber", defaultValue = "1", required = false) Integer pageNumber,
 			@RequestParam(value = "pageSize", defaultValue = "10", required = false) Integer pageSize) {
 		// for pagination we will get pageNumber and pageSize from url
 		// page number always start from zero so whatever comes from url, we pass to
 		// function after decrementing by 1
 
-		List<PostDto> allPosts = this.postService.getAllPosts(pageNumber - 1, pageSize);
-		return new ResponseEntity<List<PostDto>>(allPosts, HttpStatus.OK);
+		PaginatedResponse<PostDto> allPosts = this.postService.getAllPosts(pageNumber - 1, pageSize);
+		return new ResponseEntity<PaginatedResponse<PostDto>>(allPosts, HttpStatus.OK);
 	}
 
 	// controller to get all posts for a given id
