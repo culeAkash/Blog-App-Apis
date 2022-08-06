@@ -1,5 +1,7 @@
 package com.blog.app.services;
 
+import java.util.List;
+
 import com.blog.app.payloads.CategoryDto;
 import com.blog.app.payloads.PaginatedResponse;
 
@@ -18,4 +20,7 @@ public interface CategoryService {
 	PaginatedResponse<CategoryDto> getAllCategories(Integer pageNumber, Integer pageSize);
 
 	CategoryDto getCategoryById(Integer id);
+
+	// search category
+	List<CategoryDto> searchCategoryByKeyword(String keyword);
 }

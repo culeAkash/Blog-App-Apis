@@ -1,5 +1,7 @@
 package com.blog.app.services;
 
+import java.util.List;
+
 import com.blog.app.payloads.PaginatedResponse;
 import com.blog.app.payloads.UserDto;
 
@@ -13,4 +15,7 @@ public interface UserService {
 	PaginatedResponse<UserDto> getAllusers(Integer pageNumber, Integer pageSize);
 
 	void deleteUser(Integer userId);
+
+	// search users
+	List<UserDto> searchUsersByKeyword(String keyword);
 }

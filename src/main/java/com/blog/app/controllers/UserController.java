@@ -1,5 +1,7 @@
 package com.blog.app.controllers;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,4 +78,10 @@ public class UserController {
 		return ResponseEntity.ok(new ApiResponse("User deleted successfully", true));
 	}
 
+	// Search user controller
+	@GetMapping("/users/search/{keyword}")
+	public ResponseEntity<List<UserDto>> getUsersByKeyword(@PathVariable String keyword) {
+		List<UserDto> searchedUsersByKeyword = this.userService.searchUsersByKeyword(keyword);
+		return new ResponseEntity<List<UserDto>>(searchedUsersByKeyword, HttpStatus.OK);
+	}
 }

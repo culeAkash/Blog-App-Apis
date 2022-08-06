@@ -93,6 +93,17 @@ public class CategoryServiceImpl implements CategoryService {
 		return this.CategoryToDto(category);
 	}
 
+	@Override
+	public List<CategoryDto> searchCategoryByKeyword(String keyword) {
+		List<Category> categories = this.catRepo.searchCategoriesByKeyword("%" + keyword + "%");
+
+		List<CategoryDto> dtos = new ArrayList<CategoryDto>();
+		for (Category category : categories) {
+			dtos.add(this.CategoryToDto(category));
+		}
+		return dtos;
+	}
+
 	// method to convert categorydto to category
 	private Category CatDtoToCategory(CategoryDto dto) {
 		Category category = this.mapper.map(dto, Category.class);

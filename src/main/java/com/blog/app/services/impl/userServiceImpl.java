@@ -106,6 +106,20 @@ public class UserServiceImpl implements UserService {
 
 	}
 
+	// Search method
+	@Override
+	public List<UserDto> searchUsersByKeyword(String keyword) {
+		List<User> users = this.userRepository.searchUsersByKeyword("%" + keyword + "%");
+
+		List<UserDto> dtos = new ArrayList<UserDto>();
+		for (User user : users) {
+			dtos.add(this.userToDto(user));
+		}
+
+		return dtos;
+
+	}
+
 	// method to change userDto to User
 	private User dtoToUser(UserDto userDtoObject) {
 		User user = this.modelMapper.map(userDtoObject, User.class);

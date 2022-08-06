@@ -1,5 +1,7 @@
 package com.blog.app.controllers;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +65,13 @@ public class CategoryController {
 			@RequestParam(value = "pageSize", defaultValue = "10", required = false) Integer pageSize) {
 		PaginatedResponse<CategoryDto> allCategories = this.categoryService.getAllCategories(pageNumber - 1, pageSize);
 		return new ResponseEntity<PaginatedResponse<CategoryDto>>(allCategories, HttpStatus.OK);
+	}
+
+	// search category controller
+	@GetMapping("/categories/search/{keyword}")
+	public ResponseEntity<List<CategoryDto>> getCategoriesByKeyword(@PathVariable String keyword) {
+		List<CategoryDto> searchedCategoryByKeyword = this.categoryService.searchCategoryByKeyword(keyword);
+		return new ResponseEntity<List<CategoryDto>>(searchedCategoryByKeyword, HttpStatus.OK);
 	}
 
 }

@@ -1,5 +1,7 @@
 package com.blog.app.controllers;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,5 +94,12 @@ public class PostController {
 		this.postService.deletePost(postId);
 		return new ResponseEntity<ApiResponse>(new ApiResponse("Post has been deleted successfully", true),
 				HttpStatus.OK);
+	}
+
+	// Method for search posts by keyword
+	@GetMapping("posts/search/{keyword}")
+	public ResponseEntity<List<PostDto>> searchPostsByKeyword(@PathVariable String keyword) {
+		List<PostDto> postDtos = this.postService.getPostsByKeyword(keyword);
+		return new ResponseEntity<List<PostDto>>(postDtos, HttpStatus.OK);
 	}
 }

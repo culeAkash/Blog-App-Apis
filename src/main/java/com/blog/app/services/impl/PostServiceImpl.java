@@ -170,8 +170,14 @@ public class PostServiceImpl implements PostService {
 
 	@Override
 	public List<PostDto> getPostsByKeyword(String keyword) {
-		// TODO Auto-generated method stub
-		return null;
+		List<Post> posts = this.postRepository.searchPostsBykeyword("%" + keyword + "%");
+
+		List<PostDto> dtos = new ArrayList<PostDto>();
+		for (Post post : posts) {
+			dtos.add(this.postToPostDto(post));
+		}
+
+		return dtos;
 	}
 
 	private Post postDtoToPost(PostDto dtoObject) {
