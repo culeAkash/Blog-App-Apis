@@ -55,8 +55,10 @@ public class UserController {
 	@GetMapping("/users")
 	public ResponseEntity<PaginatedResponse<UserDto>> getAllUsers(
 			@RequestParam(value = "pageNumber", defaultValue = "1", required = false) Integer pageNumber,
-			@RequestParam(value = "pageSize", defaultValue = "10", required = false) Integer pageSize) {
-		PaginatedResponse<UserDto> allusers = this.userService.getAllusers(pageNumber - 1, pageSize);
+			@RequestParam(value = "pageSize", defaultValue = "10", required = false) Integer pageSize,
+			@RequestParam(value = "sortBy", defaultValue = "postId", required = false) String sortBy,
+			@RequestParam(value = "sortDir", defaultValue = "asc", required = false) String sortDir) {
+		PaginatedResponse<UserDto> allusers = this.userService.getAllusers(pageNumber - 1, pageSize, sortBy, sortDir);
 
 		return ResponseEntity.ok(allusers);
 	}

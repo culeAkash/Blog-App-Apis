@@ -17,7 +17,8 @@ public interface CategoryService {
 	CategoryDto updateCategory(CategoryDto dto, Integer id);
 
 	// get
-	PaginatedResponse<CategoryDto> getAllCategories(Integer pageNumber, Integer pageSize);
+	PaginatedResponse<CategoryDto> getAllCategories(Integer pageNumber, Integer pageSize, String sortBy,
+			String sortDir);
 
 	CategoryDto getCategoryById(Integer id);
 
