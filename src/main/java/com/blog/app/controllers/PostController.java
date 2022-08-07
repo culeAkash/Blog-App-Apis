@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.blog.app.config.ApplicationConstants;
 import com.blog.app.payloads.ApiResponse;
 import com.blog.app.payloads.PaginatedResponse;
 import com.blog.app.payloads.PostDto;
@@ -43,10 +44,10 @@ public class PostController {
 	@GetMapping("/category/{categoryId}/posts")
 	// To implement pagination we have to get page size and page number from url
 	public ResponseEntity<PaginatedResponse<PostDto>> getAllPostsByCategory(@PathVariable Integer categoryId,
-			@RequestParam(value = "pageNumber", defaultValue = "1", required = false) Integer pageNumber,
-			@RequestParam(value = "pageSize", defaultValue = "10", required = false) Integer pageSize,
-			@RequestParam(value = "sortBy", defaultValue = "postId", required = false) String sortBy,
-			@RequestParam(value = "sortDir", defaultValue = "asc", required = false) String sortDir) {
+			@RequestParam(value = "pageNumber", defaultValue = ApplicationConstants.PAGE_NUMBER, required = false) Integer pageNumber,
+			@RequestParam(value = "pageSize", defaultValue = ApplicationConstants.PAGE_SIZE, required = false) Integer pageSize,
+			@RequestParam(value = "sortBy", defaultValue = ApplicationConstants.POST_SORT_BY, required = false) String sortBy,
+			@RequestParam(value = "sortDir", defaultValue = ApplicationConstants.SORT_DIRECTION, required = false) String sortDir) {
 
 		PaginatedResponse<PostDto> postsByCategory = this.postService.getPostsByCategory(categoryId, pageNumber - 1,
 				pageSize, sortBy, sortDir);
@@ -56,10 +57,10 @@ public class PostController {
 	// controller for get posts for user
 	@GetMapping("/user/{userId}/posts")
 	public ResponseEntity<PaginatedResponse<PostDto>> getAllPostsByUser(@PathVariable Integer userId,
-			@RequestParam(value = "pageNumber", defaultValue = "1", required = false) Integer pageNumber,
-			@RequestParam(value = "pageSize", defaultValue = "10", required = false) Integer pageSize,
-			@RequestParam(value = "sortBy", defaultValue = "postId", required = false) String sortBy,
-			@RequestParam(value = "sortDir", defaultValue = "asc", required = false) String sortDir) {
+			@RequestParam(value = "pageNumber", defaultValue = ApplicationConstants.PAGE_NUMBER, required = false) Integer pageNumber,
+			@RequestParam(value = "pageSize", defaultValue = ApplicationConstants.PAGE_SIZE, required = false) Integer pageSize,
+			@RequestParam(value = "sortBy", defaultValue = ApplicationConstants.POST_SORT_BY, required = false) String sortBy,
+			@RequestParam(value = "sortDir", defaultValue = ApplicationConstants.SORT_DIRECTION, required = false) String sortDir) {
 
 		PaginatedResponse<PostDto> postsByUser = this.postService.getAllPostsByUser(userId, pageNumber - 1, pageSize,
 				sortBy, sortDir);
@@ -70,10 +71,10 @@ public class PostController {
 	// URL => localhost:8080/api/posts?pageNUmber=2&pageSize=4
 	@GetMapping("/posts")
 	public ResponseEntity<PaginatedResponse<PostDto>> getAllPosts(
-			@RequestParam(value = "pageNumber", defaultValue = "1", required = false) Integer pageNumber,
-			@RequestParam(value = "pageSize", defaultValue = "10", required = false) Integer pageSize,
-			@RequestParam(value = "sortBy", defaultValue = "postId", required = false) String sortBy,
-			@RequestParam(value = "sortDir", defaultValue = "asc", required = false) String sortDir) {
+			@RequestParam(value = "pageNumber", defaultValue = ApplicationConstants.PAGE_NUMBER, required = false) Integer pageNumber,
+			@RequestParam(value = "pageSize", defaultValue = ApplicationConstants.PAGE_SIZE, required = false) Integer pageSize,
+			@RequestParam(value = "sortBy", defaultValue = ApplicationConstants.POST_SORT_BY, required = false) String sortBy,
+			@RequestParam(value = "sortDir", defaultValue = ApplicationConstants.SORT_DIRECTION, required = false) String sortDir) {
 		// for pagination we will get pageNumber and pageSize from url
 		// page number always start from zero so whatever comes from url, we pass to
 		// function after decrementing by 1
