@@ -1,5 +1,6 @@
 package com.blog.app.exceptions;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -51,5 +52,11 @@ public class GlobalExceptionHandler {
 		ApiResponse apiResponse = new ApiResponse(e.getMessage() + " for this URI", false);
 
 		return new ResponseEntity<ApiResponse>(apiResponse, HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(IOException.class)
+	public ResponseEntity<ApiResponse> handlerIOException(IOException e) {
+		ApiResponse response = new ApiResponse(e.getMessage(), false);
+		return new ResponseEntity<ApiResponse>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 }
