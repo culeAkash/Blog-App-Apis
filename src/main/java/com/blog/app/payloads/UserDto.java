@@ -1,5 +1,7 @@
 package com.blog.app.payloads;
 
+import java.util.HashSet;
+
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
@@ -32,6 +34,8 @@ public class UserDto {
 	private String about;
 
 	private String userImage;
+
+	private HashSet<CommentDto> comments = new HashSet<CommentDto>();// to fetch all comments of a user
 }
 /*
  * We will user User entity only as a table in database In order to receive and

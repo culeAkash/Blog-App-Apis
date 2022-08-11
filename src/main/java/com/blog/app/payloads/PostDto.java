@@ -1,6 +1,7 @@
 package com.blog.app.payloads;
 
 import java.util.Date;
+import java.util.HashSet;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
@@ -34,4 +35,6 @@ public class PostDto {
 
 	// Same infinite recursion also occurs in case of Category class
 	private CategoryDto category;
+
+	private HashSet<CommentDto> comments = new HashSet<CommentDto>();// to fetch all comments on a posts
 }
