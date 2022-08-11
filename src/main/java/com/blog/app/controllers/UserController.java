@@ -1,11 +1,17 @@
 package com.blog.app.controllers;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.hibernate.engine.jdbc.StreamUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,11 +22,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.blog.app.config.ApplicationConstants;
 import com.blog.app.payloads.ApiResponse;
+import com.blog.app.payloads.FileResponse;
 import com.blog.app.payloads.PaginatedResponse;
 import com.blog.app.payloads.UserDto;
+import com.blog.app.services.FileService;
 import com.blog.app.services.UserService;
 
 //Make rest api use RestController
@@ -31,6 +40,12 @@ public class UserController {
 	// for implementing crud operations
 	@Autowired
 	private UserService userService;
+
+	@Autowired
+	private FileService fileService;
+
+	@Value("${project.image.users}")
+	private String path;
 
 	// POST => Create user
 	@PostMapping("/users")
@@ -86,5 +101,33 @@ public class UserController {
 	public ResponseEntity<List<UserDto>> getUsersByKeyword(@PathVariable String keyword) {
 		List<UserDto> searchedUsersByKeyword = this.userService.searchUsersByKeyword(keyword);
 		return new ResponseEntity<List<UserDto>>(searchedUsersByKeyword, HttpStatus.OK);
+	}
+
+	// controller to upload image to databse
+	@PostMapping("/users/image/upload/{userId}")
+	public ResponseEntity<FileResponse<UserDto>> postImage(@RequestParam("image") MultipartFile image,
+			@PathVariable Integer userId) throws IOException {
+
+		UserDto userDto = this.userService.getUserById(userId);
+
+		String uploadImage = this.fileService.uploadImage(this.path, image);// here we will handle exception using
+																			// Global Exception handler
+
+		userDto.setUserImage(uploadImage);
+		UserDto updatedUser = this.userService.updateUser(userDto, userId);
+
+		FileResponse<UserDto> response = new FileResponse<UserDto>(updatedUser, true);
+
+		return new ResponseEntity<FileResponse<UserDto>>(response, HttpStatus.OK);
+	}
+
+	// controller to serve images
+	@GetMapping(value = "/users/image/{imageName}", produces = MediaType.IMAGE_JPEG_VALUE) // on firing this url in the
+																							// browser image will get
+																							// displayed
+	public void DownloadImage(@PathVariable String imageName, HttpServletResponse response) throws IOException {
+		InputStream resource = this.fileService.getResource(this.path, imageName);
+		response.setContentType(MediaType.IMAGE_JPEG_VALUE);
+		StreamUtils.copy(resource, response.getOutputStream());
 	}
 }

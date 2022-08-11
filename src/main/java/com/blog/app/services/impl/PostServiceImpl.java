@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -42,11 +43,14 @@ public class PostServiceImpl implements PostService {
 	@Autowired
 	private SortingAndPaginationUtils<Post, PostDto> utils;
 
+	@Value("${project.image.posts}")
+	private String path;
+
 	@Override
 	public PostDto createPost(PostDto postDto, Integer userId, Integer categoryId) {
 		Post post = this.postDtoToPost(postDto);
 		// set image
-		post.setPostImage("default.png");
+		post.setPostImage("defaultPost.png");
 		// set date
 		post.setAddedDate(new Date());
 

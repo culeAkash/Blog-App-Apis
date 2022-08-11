@@ -30,6 +30,8 @@ public class UserDto {
 
 	@NotEmpty
 	private String about;
+
+	private String userImage;
 }
 /*
  * We will user User entity only as a table in database In order to receive and

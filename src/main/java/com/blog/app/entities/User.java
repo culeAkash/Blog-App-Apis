@@ -33,6 +33,8 @@ public class User {
 	private String password;
 	private String about;
 
+	private String userImage;
+
 	// A user can have many posts
 	// user is the column to store user id related to a post
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)

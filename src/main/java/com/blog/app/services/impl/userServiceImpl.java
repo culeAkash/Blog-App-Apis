@@ -36,6 +36,7 @@ public class UserServiceImpl implements UserService {
 		// here we have UserDto object but userRepo will expect User object so we have
 		// to change dto to user
 		User user = this.dtoToUser(userDtoObject);
+		user.setUserImage("deafaultUser.png");
 		System.out.println(user.getUserId());
 		User savedUser = this.userRepository.save(user);// saves/update user to the database
 		return this.userToDto(savedUser);
@@ -55,6 +56,7 @@ public class UserServiceImpl implements UserService {
 		user.setAbout(userDtoObject.getAbout());
 		user.setPassword(userDtoObject.getPassword());
 		user.setEmail(userDtoObject.getEmail());
+		user.setUserImage(userDtoObject.getUserImage());
 
 		// save to repo
 		this.userRepository.save(user);
