@@ -24,13 +24,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.blog.app.config.ApplicationConstants;
 import com.blog.app.payloads.ApiResponse;
 import com.blog.app.payloads.FileResponse;
 import com.blog.app.payloads.PaginatedResponse;
 import com.blog.app.payloads.UserDto;
 import com.blog.app.services.FileService;
 import com.blog.app.services.UserService;
+import com.blog.app.utils.ApplicationConstants;
 
 //Make rest api use RestController
 @RestController

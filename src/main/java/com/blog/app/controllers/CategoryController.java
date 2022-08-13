@@ -17,11 +17,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.blog.app.config.ApplicationConstants;
 import com.blog.app.payloads.ApiResponse;
 import com.blog.app.payloads.CategoryDto;
 import com.blog.app.payloads.PaginatedResponse;
 import com.blog.app.services.CategoryService;
+import com.blog.app.utils.ApplicationConstants;
 
 @RestController
 @RequestMapping("/api")
