@@ -59,4 +59,10 @@ public class GlobalExceptionHandler {
 		ApiResponse response = new ApiResponse(e.getMessage(), false);
 		return new ResponseEntity<ApiResponse>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
+
+	@ExceptionHandler(InvalidCredentialsException.class)
+	public ResponseEntity<ApiResponse> handlerIOException(InvalidCredentialsException e) {
+		ApiResponse response = new ApiResponse(e.getMessage(), false);
+		return new ResponseEntity<ApiResponse>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
 }
