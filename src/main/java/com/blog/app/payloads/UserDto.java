@@ -8,8 +8,6 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -30,7 +28,6 @@ public class UserDto {
 
 	@NotBlank(message = "Password must not be empty")
 	@Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&-+=()])(?=\\S+$).{8,}$", message = "Password must contain atleast 1 uppercase, 1 lowercase, 1 special character and 1 digit ")
-	@JsonIgnore
 	private String password;
 
 	@NotEmpty
@@ -39,6 +36,8 @@ public class UserDto {
 	private String userImage;
 
 	private HashSet<CommentDto> comments = new HashSet<CommentDto>();// to fetch all comments of a user
+
+	private HashSet<RoleDto> roles = new HashSet<RoleDto>();
 }
 /*
  * We will user User entity only as a table in database In order to receive and

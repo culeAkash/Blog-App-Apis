@@ -6,6 +6,9 @@ import com.blog.app.payloads.PaginatedResponse;
 import com.blog.app.payloads.UserDto;
 
 public interface UserService {
+
+	UserDto registerNewuser(UserDto userDto);
+
 	UserDto createUser(UserDto user);
 
 	UserDto updateUser(UserDto user, Integer id);

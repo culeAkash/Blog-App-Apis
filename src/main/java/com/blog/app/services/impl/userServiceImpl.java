@@ -9,14 +9,18 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.blog.app.entities.Role;
 import com.blog.app.entities.User;
 import com.blog.app.exceptions.ResourceNotFoundException;
 import com.blog.app.payloads.PaginatedResponse;
 import com.blog.app.payloads.UserDto;
+import com.blog.app.repositories.RoleRepository;
 import com.blog.app.repositories.UserRepository;
 import com.blog.app.services.UserService;
+import com.blog.app.utils.ApplicationConstants;
 import com.blog.app.utils.SortingAndPaginationUtils;
 
 @Service
@@ -30,6 +34,29 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private SortingAndPaginationUtils<User, UserDto> utils;
+
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+
+	@Autowired
+	private RoleRepository roleRepository;
+
+	@Override
+	public UserDto registerNewuser(UserDto userDto) {
+		User user = this.dtoToUser(userDto);
+
+		// encode the password
+		user.setPassword(this.passwordEncoder.encode(user.getPassword()));
+
+		// set role
+		Role role = this.roleRepository.findById(ApplicationConstants.NORMAL_USER).get();
+
+		user.getRoles().add(role);
+
+		User savedUser = this.userRepository.save(user);
+
+		return this.userToDto(savedUser);
+	}
 
 	@Override
 	public UserDto createUser(UserDto userDtoObject) {

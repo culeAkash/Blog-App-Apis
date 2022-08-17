@@ -1,8 +1,6 @@
 package com.blog.app.entities;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import lombok.AllArgsConstructor;
@@ -18,7 +16,6 @@ import lombok.Setter;
 public class Role {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	Integer roleId;
 
 	String roleName;

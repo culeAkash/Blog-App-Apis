@@ -13,4 +13,8 @@ public class ApplicationConstants {
 	public static final String USER_SORT_BY = "userId";
 
 	public static final String SORT_DIRECTION = "asc";
+
+	// Roles
+	public static final Integer NORMAL_USER = 502;
+	public static final Integer ADMIN_USER = 501;
 }
