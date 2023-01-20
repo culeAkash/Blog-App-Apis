@@ -34,7 +34,7 @@ import com.blog.app.utils.ApplicationConstants;
 
 //Make rest api use RestController
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/v1")
 public class UserController {
 
 	// for implementing crud operations

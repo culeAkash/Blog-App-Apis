@@ -33,7 +33,7 @@ import com.blog.app.services.PostService;
 import com.blog.app.utils.ApplicationConstants;
 
 @RestController
-@RequestMapping("/api/")
+@RequestMapping("/api/v1")
 public class PostController {
 
 	@Autowired

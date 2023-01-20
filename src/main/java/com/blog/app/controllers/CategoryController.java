@@ -24,7 +24,7 @@ import com.blog.app.services.CategoryService;
 import com.blog.app.utils.ApplicationConstants;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/v1")
 public class CategoryController {
 
 	@Autowired
